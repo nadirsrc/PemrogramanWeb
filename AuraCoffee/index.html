@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Coffee - Find Your Vibe</title>
+    <!-- Memanggil Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Memanggil AOS (Animate on Scroll) Library -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <!-- Menghubungkan ke file CSS eksternal -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HEADER DENGAN STYLE LANGSUNG (FIXED) -->
+    <header class="bg-gray-950/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-white tracking-wider font-display">Aura Coffee</a>
+            <!-- Navigasi untuk Desktop dengan style langsung -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="text-gray-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-500 after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:transition-all after:duration-300 hover:text-white hover:after:w-full">Home</a>
+                <a href="#about" class="text-gray-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-500 after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:transition-all after:duration-300 hover:text-white hover:after:w-full">About</a>
+                <a href="#menu" class="text-gray-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-500 after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:transition-all after:duration-300 hover:text-white hover:after:w-full">Menu</a>
+                <a href="#gallery" class="text-gray-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-500 after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:transition-all after:duration-300 hover:text-white hover:after:w-full">Gallery</a>
+            </nav>
+            <!-- Tombol Hamburger untuk Mobile -->
+            <div class="md:hidden">
+                <button id="hamburger-btn" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Menu untuk Mobile -->
+        <div id="mobile-menu" class="md:hidden">
+            <a href="#home" class="block text-center text-gray-300 hover:bg-gray-800 py-3 transition">Home</a>
+            <a href="#about" class="block text-center text-gray-300 hover:bg-gray-800 py-3 transition">About</a>
+            <a href="#menu" class="block text-center text-gray-300 hover:bg-gray-800 py-3 transition">Menu</a>
+            <a href="#gallery" class="block text-center text-gray-300 hover:bg-gray-800 py-3 transition">Gallery</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION DENGAN TOMBOL (FIXED) -->
+    <section id="home" class="h-screen w-full flex items-center justify-center hero-bg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1511920183353-3c7c9c5f3b39?q=80&w=1887&auto-format&fit=crop');">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative text-center text-white z-10 px-4">
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight font-display" data-aos="fade-down">Aura Coffee</h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-200" data-aos="fade-up" data-aos-delay="200">Find Your Vibe in Every Sip.</p>
+            <a href="#menu" class="mt-8 inline-block bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg" data-aos="zoom-in" data-aos-delay="400">Explore Menu</a>
+        </div>
+    </section>
+
+    <!-- Konten lain tidak ada perubahan signifikan, hanya merapikan class -->
+    <section id="about" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div data-aos="fade-right">
+                <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?q=80&w=1887&auto-format&fit=crop" alt="Interior Aura Coffee" class="rounded-lg shadow-2xl w-full h-full object-cover">
+            </div>
+            <div class="text-center md:text-left" data-aos="fade-left" data-aos-delay="200">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 font-display">Our Story</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Terinspirasi dari cahaya senja yang menenangkan, Aura Coffee lahir sebagai tempatmu menemukan jeda. Kami percaya setiap cangkir kopi punya cerita dan suasana tersendiri. Di sini, kami menyajikan biji kopi pilihan yang diracik untuk menemani momen-momen berhargamu.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="menu" class="bg-gray-950 py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-12 font-display" data-aos="fade-up">Our Menu</h2>
+             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://placehold.co/600x400/1a202c/eab308?text=Aura+Latte" alt="Aura Latte" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-baseline"><h4 class="text-xl font-semibold font-display">Aura Latte</h4><p class="text-lg font-bold text-amber-500">22K</p></div>
+                        <p class="text-gray-400 mt-2 text-sm">Kopi susu signature kami dengan sentuhan rasa vanila dan busa yang lembut.</p>
+                    </div>
+                </div>
+                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://placehold.co/600x400/1a202c/eab308?text=Americano" alt="Classic Americano" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-baseline"><h4 class="text-xl font-semibold font-display">Americano</h4><p class="text-lg font-bold text-amber-500">18K</p></div>
+                        <p class="text-gray-400 mt-2 text-sm">Espresso shot disajikan dengan air panas, klasik dan kuat.</p>
+                    </div>
+                </div>
+                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://placehold.co/600x400/1a202c/eab308?text=Cappuccino" alt="Velvet Cappuccino" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                       <div class="flex justify-between items-baseline"><h4 class="text-xl font-semibold font-display">Cappuccino</h4><p class="text-lg font-bold text-amber-500">22K</p></div>
+                        <p class="text-gray-400 mt-2 text-sm">Espresso dengan steamed milk dan busa susu yang tebal.</p>
+                    </div>
+                </div>
+                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://placehold.co/600x400/1a202c/eab308?text=V60" alt="V60 Manual Brew" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-baseline"><h4 class="text-xl font-semibold font-display">V60</h4><p class="text-lg font-bold text-amber-500">25K</p></div>
+                        <p class="text-gray-400 mt-2 text-sm">Pilihan biji kopi single origin, tanya barista kami.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="gallery" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-12 font-display" data-aos="fade-up">Vibe Check</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="h-64 overflow-hidden rounded-lg" data-aos="zoom-in" data-aos-delay="100"><img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1937&auto-format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition duration-500" alt="Vibe 1"></div>
+                <div class="h-64 overflow-hidden rounded-lg" data-aos="zoom-in" data-aos-delay="200"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1887&auto-format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition duration-500" alt="Vibe 2"></div>
+                <div class="h-64 overflow-hidden rounded-lg" data-aos="zoom-in" data-aos-delay="300"><img src="https://images.unsplash.com/photo-1551030173-1a2a1c8f8a6c?q=80&w=1887&auto-format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition duration-500" alt="Vibe 3"></div>
+                <div class="h-64 overflow-hidden rounded-lg" data-aos="zoom-in" data-aos-delay="400"><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto-format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition duration-500" alt="Vibe 4"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-950 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 Aura Coffee. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
