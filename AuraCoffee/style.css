@@ -1,0 +1,38 @@
+/* Mengaplikasikan font Poppins ke seluruh halaman */
+/* Aturan ini mengunci scroll horizontal di level tertinggi (halaman) */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #111827; /* bg-gray-900 dari Tailwind */
+    color: #f3f4f6; /* text-gray-100 dari Tailwind */
+    overflow-x: hidden; /* Diberikan juga di body untuk keamanan ganda */
+}
+
+/* === PERBAIKAN FINAL UNTUK BUG ANIMASI GELAP === */
+/* Aturan ini 'memaksa' elemen yang sedang dianimasikan untuk terlihat sepenuhnya. */
+/* !important diperlukan untuk menang melawan style dari library animasi. */
+.aos-animate {
+    opacity: 1 !important;
+}
+/* === AKHIR DARI PERBAIKAN === */
+
+
+/* Efek latar belakang hero yang parallax-like (opsional tapi keren) */
+.hero-bg {
+    background-attachment: fixed;
+}
+
+/* Style untuk animasi menu mobile */
+#mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+#mobile-menu.open {
+    max-height: 25rem; /* Tinggi maksimal menu saat terbuka */
+}
+
