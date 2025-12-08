@@ -3,211 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Unfollower Checker</title>
+    <title>IG Follow Back Checker</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Simple spinner */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 4px solid #3498db;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-gray-900 text-white min-h-screen">
 
-    <div class="w-full max-w-2xl mx-auto bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 space-y-6">
-        <!-- Header -->
-        <div class="text-center">
-            <h1 class="text-3xl font-bold text-white">Cek Siapa yang Gak Follow Back</h1>
-            <p class="text-gray-400 mt-2">Upload file JSON dari data Instagram kamu untuk melihat daftarnya.</p>
-        </div>
+    <div id="root"></div>
 
-        <!-- Instructions -->
-        <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600">
-            <h2 class="text-lg font-semibold mb-2">Cara Mendapatkan File JSON:</h2>
-            <ol class="list-decimal list-inside text-gray-300 space-y-1 text-sm">
-                <li>Buka Instagram (web atau aplikasi) > Masuk ke profil kamu.</li>
-                <li>Pilih menu (garis tiga) > <strong>Your activity</strong> (Aktivitas Anda).</li>
-                <li>Scroll ke bawah, pilih <strong>Download your information</strong> (Unduh informasi Anda).</li>
-                <li>Klik <strong>Request a download</strong> (Minta unduhan).</li>
-                <li>Pilih <strong>Select types of information</strong> (Pilih jenis informasi).</li>
-                <li>Centang HANYA <strong>Followers and following</strong>, lalu klik Next.</li>
-                <li>Pastikan formatnya <strong>JSON</strong> dan kualitas Media <strong>Low</strong>. Klik <strong>Submit request</strong>.</li>
-                <li>Tunggu email dari Instagram, lalu download dan unzip file tersebut. Di dalamnya akan ada folder `followers_and_following` yang berisi file `followers_1.json` dan `following.json`.</li>
-            </ol>
-        </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-        <!-- File Upload Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label for="followersFile" class="block mb-2 text-sm font-medium text-gray-300">1. Upload `followers_1.json`</label>
-                <input class="block w-full text-sm text-gray-400 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 focus:outline-none file:bg-gray-600 file:border-0 file:text-white file:px-4 file:py-2" id="followersFile" type="file" accept=".json">
-            </div>
-            <div>
-                <label for="followingFile" class="block mb-2 text-sm font-medium text-gray-300">2. Upload `following.json`</label>
-                <input class="block w-full text-sm text-gray-400 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 focus:outline-none file:bg-gray-600 file:border-0 file:text-white file:px-4 file:py-2" id="followingFile" type="file" accept=".json">
-            </div>
-        </div>
+        // --- Icons (Inline SVGs for simplicity & reliability) ---
+        const UploadIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        );
+        const CheckIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"/></svg>
+        );
+        const UserXIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" x2="23" y1="8" y2="13"/><line x1="23" x2="18" y1="8" y2="13"/></svg>
+        );
+        const UserCheckIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+        );
+        const SearchIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="16.65"/></svg>
+        );
+        const CopyIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        );
 
-        <!-- Action Button -->
-        <button id="checkButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            Cek Sekarang
-        </button>
+        // --- Components ---
 
-        <!-- Results -->
-        <div id="results" class="hidden space-y-4">
-            <div id="loading" class="hidden justify-center items-center flex-col">
-                <div class="loader"></div>
-                <p class="mt-4 text-gray-400">Sedang memproses data...</p>
-            </div>
-            <div id="resultsContent">
-                <h2 id="resultsTitle" class="text-2xl font-bold text-center"></h2>
-                <ul id="unfollowersList" class="bg-gray-700/50 max-h-96 overflow-y-auto p-4 rounded-lg space-y-2 border border-gray-600">
-                    <!-- Results will be populated here by JavaScript -->
-                </ul>
-            </div>
-        </div>
-    </div>
+        const FileUploader = ({ label, onFileLoaded, fileName }) => {
+            const handleFileChange = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
 
-    <footer class="text-center mt-8">
-        <p class="text-gray-500 text-sm">Script ini berjalan sepenuhnya di browser kamu. Data kamu aman dan tidak diupload ke server manapun.</p>
-    </footer>
-
-    <script>
-        // Get references to the DOM elements
-        const followersFileInput = document.getElementById('followersFile');
-        const followingFileInput = document.getElementById('followingFile');
-        const checkButton = document.getElementById('checkButton');
-        const resultsDiv = document.getElementById('results');
-        const resultsContent = document.getElementById('resultsContent');
-        const resultsTitle = document.getElementById('resultsTitle');
-        const unfollowersList = document.getElementById('unfollowersList');
-        const loadingDiv = document.getElementById('loading');
-
-        // Add event listener to the button
-        checkButton.addEventListener('click', handleCheck);
-
-        /**
-         * Reads a file from a file input and returns its content as a Promise.
-         * @param {File} file The file to read.
-         * @returns {Promise<string>} A promise that resolves with the file content.
-         */
-        function readFile(file) {
-            return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = (event) => resolve(event.target.result);
-                reader.onerror = (error) => reject(error);
+                reader.onload = (e) => {
+                    try {
+                        const json = JSON.parse(e.target.result);
+                        onFileLoaded(json, file.name);
+                    } catch (error) {
+                        alert("File JSON tidak valid!");
+                    }
+                };
                 reader.readAsText(file);
-            });
-        }
+            };
 
-        /**
-         * Main function to handle the comparison logic.
-         */
-        async function handleCheck() {
-            const followersFile = followersFileInput.files[0];
-            const followingFile = followingFileInput.files[0];
+            return (
+                <div className="flex flex-col gap-2 w-full">
+                    <label className="text-sm font-semibold text-gray-300 ml-1">{label}</label>
+                    <div className={`relative group border-2 border-dashed rounded-xl p-6 transition-all duration-300 ${fileName ? 'border-green-500/50 bg-green-500/10' : 'border-gray-600 hover:border-blue-500 hover:bg-gray-800'}`}>
+                        <input 
+                            type="file" 
+                            accept=".json" 
+                            onChange={handleFileChange} 
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        <div className="flex flex-col items-center justify-center text-center">
+                            {fileName ? (
+                                <>
+                                    <div className="bg-green-500 text-white p-2 rounded-full mb-2 shadow-lg shadow-green-500/20">
+                                        <CheckIcon />
+                                    </div>
+                                    <p className="text-sm font-medium text-green-300 truncate max-w-[200px]">{fileName}</p>
+                                    <p className="text-xs text-green-400/60 mt-1">Klik untuk ganti</p>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="text-gray-400 group-hover:text-blue-400 mb-2 transition-colors">
+                                        <UploadIcon />
+                                    </div>
+                                    <p className="text-sm text-gray-400 font-medium group-hover:text-white">Upload JSON</p>
+                                    <p className="text-xs text-gray-500 mt-1">drag & drop atau klik</p>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-            // Basic validation
-            if (!followersFile || !followingFile) {
-                alert('Harap upload kedua file (`followers_1.json` dan `following.json`) terlebih dahulu.');
-                return;
-            }
+        const ResultCard = ({ title, count, icon: Icon, active, onClick, colorClass }) => (
+            <button 
+                onClick={onClick}
+                className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-300 w-full ${active 
+                    ? `bg-gray-800 border-${colorClass}-500 shadow-lg shadow-${colorClass}-500/20` 
+                    : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-gray-600'}`}
+            >
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${active ? `bg-${colorClass}-500/20 text-${colorClass}-400` : 'bg-gray-700 text-gray-400'}`}>
+                        <Icon />
+                    </div>
+                    <div className="text-left">
+                        <h3 className={`text-sm font-semibold ${active ? 'text-white' : 'text-gray-300'}`}>{title}</h3>
+                        <p className="text-xs text-gray-500">Total Akun</p>
+                    </div>
+                </div>
+                <span className={`text-2xl font-bold ${active ? `text-${colorClass}-400` : 'text-gray-400'}`}>
+                    {count}
+                </span>
+            </button>
+        );
+
+        const App = () => {
+            const [followersData, setFollowersData] = useState([]);
+            const [followingData, setFollowingData] = useState([]);
             
-            // Show loading spinner and hide previous results
-            resultsDiv.classList.remove('hidden');
-            loadingDiv.classList.remove('hidden');
-            resultsContent.classList.add('hidden');
-            unfollowersList.innerHTML = ''; // Clear previous results
+            const [followersFileName, setFollowersFileName] = useState("");
+            const [followingFileName, setFollowingFileName] = useState("");
 
-            try {
-                // Read both files concurrently
-                const [followersContent, followingContent] = await Promise.all([
-                    readFile(followersFile),
-                    readFile(followingFile)
-                ]);
-
-                // Parse the JSON data
-                const followersData = JSON.parse(followersContent);
-                // **FIX:** The 'following' data is nested inside a 'relationships_following' key.
-                const followingData = JSON.parse(followingContent).relationships_following;
-
-                // More robust validation to check if the parsed data is an array
-                if (!Array.isArray(followersData) || !Array.isArray(followingData)) {
-                    throw new Error("Struktur file JSON tidak sesuai. Pastikan file yang diupload adalah file followers dan following yang benar.");
-                }
-
-                // Extract usernames. Instagram's JSON structure is a bit nested.
-                // We use a Set for followers for much faster lookups (O(1) average time complexity).
-                const followersUsernames = new Set(followersData.map(user => user.string_list_data[0].value));
-                const followingUsernames = followingData.map(user => user.string_list_data[0].value);
-
-                // Find users you are following but who are not following you back
-                const notFollowingBack = followingUsernames.filter(username => !followersUsernames.has(username));
-
-                // Display the results
-                displayResults(notFollowingBack);
-
-            } catch (error) {
-                console.error("Error processing files:", error);
-                alert('Terjadi kesalahan saat memproses file. Pastikan file JSON yang diupload benar dan tidak rusak. Detail: ' + error.message);
-                // Hide loading on error
-                loadingDiv.classList.add('hidden');
-                resultsDiv.classList.add('hidden');
-            }
-        }
-
-        /**
-         * Renders the list of users who don't follow back.
-         * @param {string[]} users - An array of usernames.
-         */
-        function displayResults(users) {
-            // Hide loading spinner and show content
-            loadingDiv.classList.add('hidden');
-            resultsContent.classList.remove('hidden');
-
-            if (users.length === 0) {
-                resultsTitle.textContent = 'Mantap! Semua yang kamu follow, follow back kamu. 👍';
-                return;
-            }
-
-            resultsTitle.textContent = `Ditemukan ${users.length} Akun yang Tidak Follow Back:`;
+            const [resultDontFollowBack, setResultDontFollowBack] = useState([]);
+            const [resultFans, setResultFans] = useState([]);
             
-            // Create a list item for each user
-            users.forEach(username => {
-                const listItem = document.createElement('li');
-                listItem.className = 'flex items-center justify-between p-2 bg-gray-800 rounded-md';
+            const [activeTab, setActiveTab] = useState(null); // 'dontFollowBack' | 'fans'
+            const [searchQuery, setSearchQuery] = useState("");
+            const [isAnalyzed, setIsAnalyzed] = useState(false);
+
+            // Parser khusus untuk struktur file Instagram yang sering berubah
+            const extractUsernames = (json, type) => {
+                let usernames = [];
                 
-                const usernameSpan = document.createElement('span');
-                usernameSpan.className = 'font-medium';
-                usernameSpan.textContent = username;
+                try {
+                    // Logic untuk Followers (biasanya Array langsung)
+                    if (type === 'followers') {
+                        // Cek format standard array of objects
+                        if (Array.isArray(json)) {
+                            usernames = json.map(item => item.string_list_data?.[0]?.value).filter(Boolean);
+                        } 
+                        // Cek format lama atau variasi object wrapper
+                        else if (json.relationships_followers) {
+                             usernames = json.relationships_followers.map(item => item.string_list_data?.[0]?.value).filter(Boolean);
+                        }
+                    } 
+                    // Logic untuk Following (biasanya Object -> relationships_following)
+                    else if (type === 'following') {
+                        const list = json.relationships_following || json.friends || []; // Fallback ke 'friends' untuk data lama
+                        usernames = list.map(item => {
+                            // Prioritas 1: string_list_data value
+                            if (item.string_list_data?.[0]?.value) return item.string_list_data[0].value;
+                            // Prioritas 2: Title field (kadang username ada di title)
+                            if (item.title) return item.title;
+                            return null;
+                        }).filter(Boolean);
+                    }
+                } catch (e) {
+                    console.error("Error parsing JSON", e);
+                }
+                
+                return usernames;
+            };
 
-                const profileLink = document.createElement('a');
-                profileLink.href = `https://www.instagram.com/${username}/`;
-                profileLink.target = '_blank';
-                profileLink.rel = 'noopener noreferrer';
-                profileLink.className = 'text-sm bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-full transition-colors';
-                profileLink.textContent = 'Lihat Profil';
+            const handleAnalyze = () => {
+                const followersSet = new Set(followersData);
+                const followingSet = new Set(followingData);
 
-                listItem.appendChild(usernameSpan);
-                listItem.appendChild(profileLink);
-                unfollowersList.appendChild(listItem);
-            });
-        }
+                // Logic: Ada di Following tapi GAK ADA di Followers
+                const dontFollowBack = followingData.filter(user => !followersSet.has(user));
+                
+                // Logic: Ada di Followers tapi GAK ADA di Following
+                const fans = followersData.filter(user => !followingSet.has(user));
+
+                setResultDontFollowBack(dontFollowBack);
+                setResultFans(fans);
+                setIsAnalyzed(true);
+                setActiveTab('dontFollowBack'); // Default open tab
+            };
+
+            const resetData = () => {
+                setFollowersData([]);
+                setFollowingData([]);
+                setFollowersFileName("");
+                setFollowingFileName("");
+                setIsAnalyzed(false);
+                setActiveTab(null);
+                setSearchQuery("");
+            };
+
+            const getFilteredList = () => {
+                const list = activeTab === 'dontFollowBack' ? resultDontFollowBack : resultFans;
+                if (!searchQuery) return list;
+                return list.filter(u => u.toLowerCase().includes(searchQuery.toLowerCase()));
+            };
+
+            const copyToClipboard = () => {
+                const list = getFilteredList();
+                const text = list.join('\n');
+                navigator.clipboard.writeText(text);
+                alert("Daftar berhasil disalin!");
+            };
+
+            return (
+                <div className="max-w-2xl mx-auto p-4 md:p-8">
+                    {/* Header */}
+                    <div className="text-center mb-10 mt-4">
+                        <div className="inline-block p-3 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 shadow-lg shadow-orange-500/20 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        </div>
+                        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-400">
+                            IG Checking
+                        </h1>
+                        <p className="text-gray-400 mt-2 text-sm">Cek siapa yang fake friend dan siapa fans rahasia lu.</p>
+                    </div>
+
+                    {/* Upload Section */}
+                    {!isAnalyzed ? (
+                        <div className="glass rounded-2xl p-6 md:p-8 animate-fade-in">
+                            <div className="flex flex-col md:flex-row gap-6 mb-8">
+                                <FileUploader 
+                                    label="Upload followers_1.json" 
+                                    fileName={followersFileName}
+                                    onFileLoaded={(json, name) => {
+                                        setFollowersData(extractUsernames(json, 'followers'));
+                                        setFollowersFileName(name);
+                                    }}
+                                />
+                                <FileUploader 
+                                    label="Upload following.json" 
+                                    fileName={followingFileName}
+                                    onFileLoaded={(json, name) => {
+                                        setFollowingData(extractUsernames(json, 'following'));
+                                        setFollowingFileName(name);
+                                    }}
+                                />
+                            </div>
+
+                            <button
+                                onClick={handleAnalyze}
+                                disabled={!followersFileName || !followingFileName}
+                                className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center gap-2
+                                    ${(!followersFileName || !followingFileName) 
+                                        ? 'bg-gray-800 text-gray-500 cursor-not-allowed' 
+                                        : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/25 transform hover:scale-[1.02]'
+                                    }`}
+                            >
+                                <SearchIcon />
+                                Analisis Sekarang
+                            </button>
+                            
+                            <div className="mt-6 text-xs text-center text-gray-500">
+                                <p>Data diproses lokal di browser lu. Gak ada yang dikirim ke server.</p>
+                            </div>
+                        </div>
+                    ) : (
+                        // Results Section
+                        <div className="animate-fade-in-up">
+                            <div className="flex gap-4 mb-6">
+                                <ResultCard 
+                                    title="Gak Follback" 
+                                    count={resultDontFollowBack.length} 
+                                    icon={UserXIcon}
+                                    active={activeTab === 'dontFollowBack'}
+                                    onClick={() => setActiveTab('dontFollowBack')}
+                                    colorClass="red"
+                                />
+                                <ResultCard 
+                                    title="Fans Lu" 
+                                    count={resultFans.length} 
+                                    icon={UserCheckIcon}
+                                    active={activeTab === 'fans'}
+                                    onClick={() => setActiveTab('fans')}
+                                    colorClass="green"
+                                />
+                            </div>
+
+                            <div className="glass rounded-2xl p-6 min-h-[400px]">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-xl font-bold flex items-center gap-2">
+                                        {activeTab === 'dontFollowBack' ? (
+                                            <span className="text-red-400">Mereka Gak Follback 😤</span>
+                                        ) : (
+                                            <span className="text-green-400">Fans Setia Lu 😍</span>
+                                        )}
+                                    </h2>
+                                    <button onClick={resetData} className="text-xs text-gray-400 hover:text-white underline">
+                                        Reset File
+                                    </button>
+                                </div>
+
+                                {/* Search Bar */}
+                                <div className="relative mb-4">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Cari username..." 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-gray-800/50 border border-gray-700 rounded-lg py-2 pl-10 pr-4 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                    />
+                                    <div className="absolute left-3 top-2.5 text-gray-500">
+                                        <SearchIcon />
+                                    </div>
+                                    {getFilteredList().length > 0 && (
+                                        <button 
+                                            onClick={copyToClipboard}
+                                            className="absolute right-2 top-1.5 p-1 text-gray-400 hover:text-blue-400 transition-colors"
+                                            title="Copy List"
+                                        >
+                                            <CopyIcon />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* List Display */}
+                                <div className="overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+                                    {getFilteredList().length > 0 ? (
+                                        <ul className="space-y-2">
+                                            {getFilteredList().map((user, idx) => (
+                                                <li key={idx} className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30 hover:bg-gray-800 transition-colors border border-gray-700/50">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-600 flex items-center justify-center text-xs font-bold text-gray-300">
+                                                            {user.substring(0,2).toUpperCase()}
+                                                        </div>
+                                                        <a 
+                                                            href={`https://instagram.com/${user}`} 
+                                                            target="_blank" 
+                                                            rel="noreferrer"
+                                                            className="text-sm font-medium hover:text-blue-400 transition-colors"
+                                                        >
+                                                            {user}
+                                                        </a>
+                                                    </div>
+                                                    <a 
+                                                        href={`https://instagram.com/${user}`} 
+                                                        target="_blank" 
+                                                        rel="noreferrer"
+                                                        className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-md transition-colors"
+                                                    >
+                                                        Lihat
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center h-[200px] text-gray-500">
+                                            <p>Tidak ada data ditemukan.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    <footer className="mt-12 text-center text-gray-600 text-sm">
+                        <p>&copy; {new Date().getFullYear()} IG Checking. Buat have fun aja ya bre.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
