@@ -1,139 +1,99 @@
-document.addEventListener('DOMContentLoaded', function() {
-
-    // --- Seleksi Elemen ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- 1. MOBILE MENU ---
     const menuBtn = document.getElementById('menu-btn');
-    const navMenu = document.getElementById('nav-menu');
-    const pageContent = document.querySelector('.page-content');
-    const logoTypingEl = document.getElementById('logo-typing-text');
-    const heroTypingEl = document.getElementById('hero-typing-text');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-    // --- Fungsionalitas Menu Mobile & Efek Blur ---
-    if (menuBtn && navMenu && pageContent) {
+    if (menuBtn && mobileMenu) {
         menuBtn.addEventListener('click', () => {
-            menuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            pageContent.classList.toggle('content-blurred');
+            mobileMenu.classList.toggle('hidden');
         });
     }
 
-    // --- Fungsi Animasi Ketik (Typewriter) ---
-    class Typewriter {
-        constructor(el, words, { wait = 3000, speed = 150, loop = false } = {}) {
-            this.el = el;
-            this.words = words;
-            this.wait = parseInt(wait, 10);
-            this.speed = parseInt(speed, 10);
-            this.loop = loop;
-            this.txt = '';
-            this.wordIndex = 0;
-            this.type();
-            this.isDeleting = false;
-        }
+    // --- 2. TYPING EFFECT (Cuma jalan kalo elemennya ada/di index.html) ---
+    const typingElement = document.getElementById('typing-text');
+    if (typingElement) {
+        const phrases = ["Web Developer", "Game Scripter", "Tech Enthusiast"];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
 
-        type() {
-            const current = this.wordIndex % this.words.length;
-            const fullTxt = this.words[current];
-            let typeSpeed = this.speed;
-
-            if (this.isDeleting) {
-                typeSpeed /= 2;
-                this.txt = fullTxt.substring(0, this.txt.length - 1);
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+                typeSpeed = 50; 
             } else {
-                this.txt = fullTxt.substring(0, this.txt.length + 1);
+                typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+                typeSpeed = 100;
             }
 
-            this.el.innerHTML = `<span class="wrap">${this.txt}</span>`;
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Nunggu pas kalimat selesai
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
 
-            if (!this.isDeleting && this.txt === fullTxt) {
-                if (this.loop || this.words.length > 1) {
-                    typeSpeed = this.wait;
-                    this.isDeleting = true;
+            setTimeout(type, typeSpeed);
+        }
+        type();
+    }
+
+    // --- 3. MODAL PROJECTS (Cuma jalan di projects.html) ---
+    const modal = document.getElementById('project-modal');
+    if (modal) {
+        const modalImg = document.getElementById('modal-img');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalVideoBtn = document.getElementById('modal-video-btn');
+        const closeBtn = document.getElementById('modal-close-btn');
+        const modalBg = document.getElementById('modal-bg');
+
+        // Buka Modal
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const imgSrc = card.getAttribute('data-img-src');
+                const title = card.getAttribute('data-title');
+                const desc = card.getAttribute('data-desc');
+                const videoUrl = card.getAttribute('data-video-url');
+
+                modalImg.src = imgSrc;
+                modalTitle.textContent = title;
+                modalDesc.textContent = desc;
+
+                if (videoUrl && videoUrl.trim() !== "") {
+                    modalVideoBtn.href = videoUrl;
+                    modalVideoBtn.classList.remove('hidden');
+                    modalVideoBtn.classList.add('inline-block');
                 } else {
-                    this.el.querySelector('.wrap').style.animation = 'none';
-                    this.el.querySelector('.wrap').style.border = 'none';
-                    return;
+                    modalVideoBtn.classList.add('hidden');
+                    modalVideoBtn.classList.remove('inline-block');
                 }
-            } else if (this.isDeleting) {
-                if (this.loop && this.txt.length === 1) {
-                    this.isDeleting = false;
-                    typeSpeed = 500;
-                } else if (this.txt === '') {
-                    this.isDeleting = false;
-                    this.wordIndex++;
-                    typeSpeed = 500;
-                }
-            }
 
-            setTimeout(() => this.type(), typeSpeed);
-        }
-    }
-
-    // --- Inisialisasi Animasi Ketik ---
-    if (logoTypingEl) {
-        new Typewriter(logoTypingEl, ['Nadir.'], { speed: 250, wait: 2000, loop: true });
-    }
-    if (heroTypingEl) {
-        const words = ["Hi, I'm Muhammad Nadir", "A Web Enthusiast", "A Future Developer"];
-        new Typewriter(heroTypingEl, words, { wait: 3000, speed: 150 });
-    }
-
-    // --- ANIMASI: Logika Scroll-triggered ---
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-            } else {
-                entry.target.classList.remove('is-visible');
-            }
+                modal.classList.remove('pointer-events-none', 'opacity-0');
+                document.body.style.overflow = 'hidden'; // Stop scroll belakang
+            });
         });
-    }, { threshold: 0.1 });
-    animatedElements.forEach(el => { observer.observe(el); });
 
+        // Tutup Modal
+        const closeModal = () => {
+            modal.classList.add('pointer-events-none', 'opacity-0');
+            document.body.style.overflow = 'auto';
+        };
 
-    // --- LOGIKA MODAL PROYEK (DIPERBARUI) ---
-    const projectCards = document.querySelectorAll('.project-card');
-    const modalOverlay = document.getElementById('project-modal-overlay');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-    const modalImg = document.getElementById('modal-img');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDesc = document.getElementById('modal-desc');
-    const modalVideoBtn = document.getElementById('modal-video-btn'); // Seleksi tombol video
-
-    projectCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const imgSrc = card.dataset.imgSrc;
-            const title = card.dataset.title;
-            const desc = card.dataset.desc;
-            const videoUrl = card.dataset.videoUrl; // Ambil URL video
-
-            modalImg.src = imgSrc;
-            modalTitle.textContent = title;
-            modalDesc.textContent = desc;
-
-            // Logika untuk menampilkan/menyembunyikan tombol video
-            if (videoUrl) {
-                modalVideoBtn.href = videoUrl;
-                modalVideoBtn.style.display = 'inline-block'; // Tampilkan tombol
-            } else {
-                modalVideoBtn.style.display = 'none'; // Sembunyikan tombol
-            }
-
-            modalOverlay.classList.add('active');
-            pageContent.classList.add('content-blurred');
+        closeBtn.addEventListener('click', closeModal);
+        modalBg.addEventListener('click', closeModal);
+        
+        // Tutup pake tombol ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
-    });
-
-    const closeModal = () => {
-        modalOverlay.classList.remove('active');
-        pageContent.classList.remove('content-blurred');
-    };
-
-    modalCloseBtn.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            closeModal();
-        }
-    });
-
+    }
 });
