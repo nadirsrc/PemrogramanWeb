@@ -18,7 +18,6 @@ Berikut adalah tautan langsung ke proyek-proyek yang saat ini tersedia di dalam 
 * 🌐 **[MultiplePage](https://nadirsrc.github.io/PemrogramanWeb/MultiplePage)**
 * 📄 **[OnePage](https://nadirsrc.github.io/PemrogramanWeb/OnePage)**
 * 📝 **[Registration](https://nadirsrc.github.io/PemrogramanWeb/Registration)** *(Catatan: Mengingat GitHub Pages dikhususkan untuk situs web statis, fungsionalitas skrip PHP pada proyek ini mungkin tidak berjalan secara optimal).*
-* 📐 **[WireframeECE](https://nadirsrc.github.io/PemrogramanWeb/WireframeECE)**
 
 ## 🛠️ Teknologi yang Digunakan
 
